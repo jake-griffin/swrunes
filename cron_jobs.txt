@@ -1,0 +1,2 @@
+every 1hour:
+/usr/local/bin/php /<path_to_hosted_site>/maintenance.php >/dev/null 2>&1

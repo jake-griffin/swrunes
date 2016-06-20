@@ -1,0 +1,44 @@
+CREATE DATABASE IF NOT EXISTS sw_runes;
+
+GRANT ALL ON sw_runes.* TO 'sw_user'@'localhost' IDENTIFIED BY 'sw_pass';
+
+USE sw_runes;
+
+DROP TABLE IF EXISTS `sw_optimizer`;
+CREATE TABLE IF NOT EXISTS `sw_optimizer` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `session` varchar(20) COLLATE utf8_bin NOT NULL,
+    `optimize_run` varchar(3) COLLATE utf8_bin NOT NULL,
+    `created` datetime NOT NULL,
+    `rune_ids` varchar(50) COLLATE utf8_bin NOT NULL,
+    `sets` varchar(50) COLLATE utf8_bin DEFAULT NULL,
+    `a_hp` int(11) NOT NULL,
+    `a_atk` int(11) NOT NULL,
+    `a_def` int(11) NOT NULL,
+    `a_spd` int(11) NOT NULL,
+    `a_crate` int(11) NOT NULL,
+    `a_cdmg` int(11) NOT NULL,
+    `a_res` int(11) NOT NULL,
+    `a_acc` int(11) NOT NULL,
+    `a_dps` int(11) NOT NULL,
+    `a_effhp` int(11) NOT NULL,
+    `a_effhp_d` int(11) NOT NULL,
+    `m_hp` int(11) NOT NULL,
+    `m_atk` int(11) NOT NULL,
+    `m_def` int(11) NOT NULL,
+    `m_spd` int(11) NOT NULL,
+    `m_crate` int(11) NOT NULL,
+    `m_cdmg` int(11) NOT NULL,
+    `m_res` int(11) NOT NULL,
+    `m_acc` int(11) NOT NULL,
+    `m_dps` int(11) NOT NULL,
+    `m_effhp` int(11) NOT NULL,
+    `m_effhp_d` int(11) NOT NULL,
+    `slots246` varchar(50) COLLATE utf8_bin NOT NULL,
+    `substat_skillups` int(11) DEFAULT NULL,
+    `monster_id` int(11) NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `session_run` (`session`, `optimize_run`),
+    KEY `sets` (`sets`),
+    KEY `slots246` (`slots246`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1;
