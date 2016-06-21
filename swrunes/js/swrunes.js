@@ -228,6 +228,7 @@ var asyncProcess;
 //     "b_res": "0",
 //     "b_acc": "0",
 //     "b_dps": "0",
+//     "b_dpa": "0",
 //     "a_hp": "7410",
 //     "a_atk": "1098",
 //     "a_def": "549",
@@ -237,6 +238,7 @@ var asyncProcess;
 //     "a_res": "0",
 //     "a_acc": "0",
 //     "a_dps": "0",
+//     "a_dpa": "0",
 //     "m_hp": "7410",
 //     "m_atk": "1098",
 //     "m_def": "549",
@@ -246,6 +248,7 @@ var asyncProcess;
 //     "m_res": "0",
 //     "m_acc": "0",
 //     "m_dps": "0",
+//     "m_dpa": "0",
 //     "o_hp_p": "50",
 //     "o_hp": "1200",
 //     "o_atk_p": "40",
@@ -415,8 +418,12 @@ function initRunesTable(dataSet) {
             }
         ],
         "rowCallback": function(row, data, index) {
-            colour = determineRuneColour(data);
-            $(row).css({"color": colour});
+            $(row).removeClass('normal');
+            $(row).removeClass('magic');
+            $(row).removeClass('rare');
+            $(row).removeClass('hero');
+            $(row).removeClass('legend');
+            $(row).addClass(determineRuneClass(data));
         }
     });
 }
@@ -674,8 +681,12 @@ function initSubRunesTable(dataSet) {
             },
         ],
         "rowCallback": function(row, data, dataIndex) {
-            colour = determineRuneColour(data);
-            $(row).css({"color": colour});
+            $(row).removeClass('normal');
+            $(row).removeClass('magic');
+            $(row).removeClass('rare');
+            $(row).removeClass('hero');
+            $(row).removeClass('legend');
+            $(row).addClass(determineRuneClass(data));
         }
     });
 }
@@ -684,7 +695,7 @@ function initMonstersTable(dataSet) {
     var data1 = [];
     if (dataSet !== null && dataSet.length > 0) {
         dataSet.forEach(function(monster) {
-            var extendedMonster = extendMonster(monster, orderBySlots(getRunesWithMons(gridRunes, monster.id)));
+            var extendedMonster = extendMonster(monster, orderBySlots(getMonsterRunes(monster.id)));
             data1.push(extendedMonster);
         });
     }
@@ -708,6 +719,7 @@ function initMonstersTable(dataSet) {
             {"data": "b_res"},
             {"data": "b_acc"},
             {"data": "b_dps"},
+            {"data": "b_dpa"},
             {"data": "a_hp", "visible": false},
             {"data": "a_atk", "visible": false},
             {"data": "a_def", "visible": false},
@@ -717,6 +729,7 @@ function initMonstersTable(dataSet) {
             {"data": "a_res", "visible": false},
             {"data": "a_acc", "visible": false},
             {"data": "a_dps", "visible": false},
+            {"data": "a_dpa", "visible": false},
             {"data": "m_hp", "visible": false},
             {"data": "m_atk", "visible": false},
             {"data": "m_def", "visible": false},
@@ -726,6 +739,7 @@ function initMonstersTable(dataSet) {
             {"data": "m_res", "visible": false},
             {"data": "m_acc", "visible": false},
             {"data": "m_dps", "visible": false},
+            {"data": "m_dpa", "visible": false},
             {"data": null, "defaultContent": '<a href="#" class="del_row">delete</a>'}
         ],
         "rowCallback": function(row, data, dataIndex) {
@@ -734,7 +748,9 @@ function initMonstersTable(dataSet) {
             $(row).removeClass('wind');
             $(row).removeClass('light');
             $(row).removeClass('dark');
-            $(row).addClass(data.attribute.toLowerCase());
+            if (data.attribute) {
+                $(row).addClass(data.attribute.toLowerCase());
+            }
         }
     });
 }
@@ -809,6 +825,7 @@ function initOptTable(dataSet) {
             {"data": "a_res", "width": "4%", "orderSequence": ["desc", "asc"]},
             {"data": "a_acc", "width": "4%", "orderSequence": ["desc", "asc"]},
             {"data": "a_dps", "width": "6%", "orderSequence": ["desc", "asc"]},
+            {"data": "a_dpa", "width": "6%", "orderSequence": ["desc", "asc"]},
             {"data": "a_effhp", "width": "6%", "orderSequence": ["desc", "asc"]},
             {"data": "a_effhp_d", "width": "6%", "orderSequence": ["desc", "asc"]},
             {"data": "m_hp", "width": "6%", "orderSequence": ["desc", "asc"], "visible": false},
@@ -820,6 +837,7 @@ function initOptTable(dataSet) {
             {"data": "m_res", "width": "4%", "orderSequence": ["desc", "asc"], "visible": false},
             {"data": "m_acc", "width": "4%", "orderSequence": ["desc", "asc"], "visible": false},
             {"data": "m_dps", "width": "6%", "orderSequence": ["desc", "asc"], "visible": false},
+            {"data": "m_dpa", "width": "6%", "orderSequence": ["desc", "asc"], "visible": false},
             {"data": "m_effhp", "width": "6%", "orderSequence": ["desc", "asc"], "visible": false},
             {"data": "m_effhp_d", "width": "6%", "orderSequence": ["desc", "asc"], "visible": false},
             {"data": "slots246", "width": "14%"},
@@ -1075,41 +1093,18 @@ function updateRune() {
     });
 }
 
-function determineRuneColour(rune) {
-    res = "black";
-    if (rune.s4_t && rune.s4_v && rune.s4_v > 0) {
-        res = "#D4A017";
-    } else if (rune.s3_t && rune.s3_v && rune.s3_v > 0) {
-        res = "purple";
-    } else if (rune.s2_t && rune.s2_v && rune.s2_v > 0) {
-        res = "#48CCCD";
-    } else if (rune.s1_t && rune.s1_v && rune.s1_v > 0) {
-        res = "green";
-    }
-    return res;
-}
-
-function determineMonsterColour(monster) {
+function determineRuneClass(rune) {
     var res;
-    switch (monster.attribute) {
-        case "Fire":
-            res = "#AA0C05";
-            break;
-        case "Water":
-            res = "#1258A5";
-            break;
-        case "Wind":
-            res = "#C7A726";
-            break;
-        case "Light":
-            res = "#BCAD8D";
-            break;
-        case "Dark":
-            res = "#5D076B";
-            break;
-        default:
-            res = "black";
-            break;
+    if (rune.s4_t && rune.s4_v && rune.s4_v > 0) {
+        res = "legend";
+    } else if (rune.s3_t && rune.s3_v && rune.s3_v > 0) {
+        res = "hero";
+    } else if (rune.s2_t && rune.s2_v && rune.s2_v > 0) {
+        res = "rare";
+    } else if (rune.s1_t && rune.s1_v && rune.s1_v > 0) {
+        res = "magic";
+    } else {
+        res = "normal";
     }
     return res;
 }
@@ -1303,10 +1298,16 @@ function displayMonsterActualStats(elementId, monster) {
             '    <div class="col-md-3">' + monster.m_effhp_d + '</div>',
             '</div>',
             '<div class="row" style="color: red;">',
-            '    <div class="col-md-3">DPS(atk)</div>',
+            '    <div class="col-md-3">DPS</div>',
             '    <div class="col-md-3">' + monster.b_dps + '</div>',
             '    <div class="col-md-3">' + monster.a_dps + '</div>',
             '    <div class="col-md-3">' + monster.m_dps + '</div>',
+            '</div>',
+            '<div class="row" style="color: red;">',
+            '    <div class="col-md-3">DPA</div>',
+            '    <div class="col-md-3">' + monster.b_dpa + '</div>',
+            '    <div class="col-md-3">' + monster.a_dpa + '</div>',
+            '    <div class="col-md-3">' + monster.m_dpa + '</div>',
             '</div>',
             '<div class="row" style="color: red;">',
             '    <div class="col-md-3">substat levelups</div>',
@@ -1322,7 +1323,7 @@ function displayMonsterActualStats(elementId, monster) {
 function displayRuneSlot(elementId, rune, slot, displayMax) {
     var newHtml = '';
     if (rune) {
-        colour = determineRuneColour(rune);
+        runeClass = determineRuneClass(rune);
         var stars = '' + rune.grade + '<img src="images/star1.jpg" height="10px" >';
         var runeIdLink = '<a href="javascript:editRune(' + rune.id + ')">' + rune.id + '</a>';
         var monsterIdLink = rune.monster > 0 ?
@@ -1332,10 +1333,15 @@ function displayRuneSlot(elementId, rune, slot, displayMax) {
         //     stars += "*";
         // }
         newHtml = [
-            '<div class="row" style="color: ' + colour + ';">',
-            '    <strong><center>' + stars + ' +' + rune.level + ' ' + rune.set + ' (' + rune.slot + ')',
-            '    <br/>Eff%: ' + calculateRuneEfficiency(rune) + ' / ' + calculateMaxRuneEfficiency(rune),
-            '    </center></strong>',
+            '<div class="row ' + runeClass + '">',
+            '    <div class="col-md-12">',
+            '        <center><strong>' + stars + ' +' + rune.level + ' ' + rune.set + ' (' + rune.slot + ')</strong></center>',
+            '    </div>',
+            '</div>',
+            '<div class="row ' + runeClass + '">',
+            '    <div class="col-md-12">',
+            '        <center><strong>Eff%: ' + calculateRuneEfficiency(rune) + ' / ' + calculateMaxRuneEfficiency(rune) + '</strong></center>',
+            '    </div>',
             '</div>',
             '<div class="row">',
             '    <div class="col-md-7">&nbsp;&nbsp;' + rune.m_t + '</div>',
@@ -1382,7 +1388,7 @@ function displayRuneSlot(elementId, rune, slot, displayMax) {
 }
 
 // create a monster in table with data from "Monster details" panel
-function createMonster(table, lastMonsterId) {
+function createMonster(lastMonsterId) {
     lastMonsterId++;
     var newMonster = {
         "id": lastMonsterId,
@@ -1398,9 +1404,9 @@ function createMonster(table, lastMonsterId) {
         "b_res": Number($("#monster_res").val()),
         "b_acc": Number($("#monster_acc").val())
     };
-    newMonster = extendMonster(newMonster, getRunesWithMons(gridRunes, lastMonsterId));
+    newMonster = extendMonster(newMonster, getMonsterRunes(lastMonsterId));
 
-    table.row.add(newMonster).draw();
+    gridMons.row.add(newMonster).draw();
     return lastMonsterId;
 }
 
@@ -1419,8 +1425,9 @@ function updateMonster() {
             d.b_cdmg = Number($("#monster_cdmg").val());
             d.b_res = Number($("#monster_res").val());
             d.b_acc = Number($("#monster_acc").val());
-            var extendedMonster = extendMonster(d, orderBySlots(getRunesWithMons(gridRunes, d.id)));
+            var extendedMonster = extendMonster(d, orderBySlots(getMonsterRunes(d.id)));
             d.b_dps = extendedMonster.b_dps;
+            d.b_dpa = extendedMonster.b_dpa;
             d.a_hp = extendedMonster.a_hp;
             d.a_atk = extendedMonster.a_atk;
             d.a_def = extendedMonster.a_def;
@@ -1430,6 +1437,7 @@ function updateMonster() {
             d.a_res = extendedMonster.a_res;
             d.a_acc = extendedMonster.a_acc;
             d.a_dps = extendedMonster.a_dps;
+            d.a_dpa = extendedMonster.a_dpa;
             d.m_hp = extendedMonster.m_hp;
             d.m_atk = extendedMonster.m_atk;
             d.m_def = extendedMonster.m_def;
@@ -1439,6 +1447,7 @@ function updateMonster() {
             d.m_res = extendedMonster.m_res;
             d.m_acc = extendedMonster.m_acc;
             d.m_dps = extendedMonster.m_dps;
+            d.m_dpa = extendedMonster.m_dpa;
         }
     });
     gridRunes.data().each(function (d) {
@@ -1489,6 +1498,7 @@ function deleteRunesByMonsterId(monsterid) {
 function emptyExtend(monster) {
     return $.extend(monster, {
         "b_dps": 0,
+        "b_dpa": 0,
         "a_hp": 0,
         "a_atk": 0,
         "a_def": 0,
@@ -1498,6 +1508,7 @@ function emptyExtend(monster) {
         "a_res": 0,
         "a_acc": 0,
         "a_dps": 0,
+        "a_dpa": 0,
         "m_hp": 0,
         "m_atk": 0,
         "m_def": 0,
@@ -1507,6 +1518,7 @@ function emptyExtend(monster) {
         "m_res": 0,
         "m_acc": 0,
         "m_dps": 0,
+        "m_dpa": 0,
         "o_hp_p": 0,
         "o_hp": 0,
         "o_atk_p": 0,
@@ -1741,26 +1753,35 @@ function determineCompleteSetsAndEffects(monster, runes) {
 }
 
 // calculates base, actual and +15 dps based on atk, crit rate and crit dmg
-function calculateAtkDps(monster) {
-    var violentBonus = (monster.sets.indexOf("Violent") > -1 ? 0.248 : 0);
+function calculateDamageStats(monster) {
+    var violentBonus = (monster.sets.indexOf("Violent") > -1 ? 1.248 : 1);
 
-    // calculate base dps
+    // Base
     var crate = Math.min(monster.b_crate, 100);
     var nrate = 100 - crate
+
     monster.b_dps = (nrate + crate * (100 + monster.b_cdmg) / 100) * monster.b_atk / 100;
     monster.b_dps = Math.floor(monster.b_dps * monster.b_spd / 100);
 
-    // calculate actual dps with treshold base monster speed and consider Violent
+    monster.b_dpa = Math.floor((nrate + crate * (100 + monster.b_cdmg) / 100) * monster.b_atk / 100);
+
+    // Actual
     crate = Math.min(monster.a_crate, 100);
     nrate = 100 - crate
-    monster.a_dps = (nrate + crate * (100 + monster.a_cdmg) / 100) * monster.a_atk / 100;
-    monster.a_dps = Math.floor(monster.a_dps * monster.a_spd / 100 + monster.a_dps * violentBonus);
 
-    // calculate +15 dps with treshold base monster speed and consider Violent
+    monster.a_dps = (nrate + crate * (100 + monster.a_cdmg) / 100) * monster.a_atk / 100;
+    monster.a_dps = Math.floor(monster.a_dps * monster.a_spd * violentBonus / 100);
+
+    monster.a_dpa = Math.floor((nrate + crate * (100 + monster.a_cdmg) / 100) * monster.a_atk / 100);
+
+    // Max
     crate = Math.min(monster.m_crate, 100);
     nrate = 100 - crate
+
     monster.m_dps = (nrate + crate * (100 + monster.m_cdmg) / 100) * monster.m_atk / 100;
     monster.m_dps = Math.floor(monster.m_dps * monster.m_spd / 100 + monster.m_dps * violentBonus);
+
+    monster.m_dpa = Math.floor((nrate + crate * (100 + monster.m_cdmg) / 100) * monster.m_atk / 100);
 
     return monster;
 }
@@ -1798,7 +1819,7 @@ function extendMonster(monster, runes) {
     monster_x = determineCompleteSetsAndEffects(monster_x, runes);
 
     monster_x = calculateActualAndMax(monster_x);
-    monster_x = calculateAtkDps(monster_x);
+    monster_x = calculateDamageStats(monster_x);
     monster_x = calculateEffectiveHp(monster_x);
 
     return monster_x;
@@ -2685,7 +2706,7 @@ function optimize(focusSelected) {
             $("#opt_time").html("" + moment().format('MMM Do YY HH:mm:ss') + ": Calculating builds stats 0 /" + length + ". Press Abort to stop.");
             var monster = getMonsterDataById($('#opt_monster').val());
 
-            var extendedMonsters = "runeIds;sets;actual HP;actual ATK;actual DEF;actual SPD;actual CRate;actual CDmg;actual RES;actual ACC;actual DPS;actual Eff.HP;actual Eff.HP def br;+15 HP;+15 ATK;+15 DEF;+15 SPD;+15 CRate;+15 CDmg;+15 RES;+15 ACC;+15 DPS;+15 Eff.HP;+15 Eff.HP def br;slots 2/4/7;substats upgrades;\n";
+            var extendedMonsters = "runeIds;sets;actual HP;actual ATK;actual DEF;actual SPD;actual CRate;actual CDmg;actual RES;actual ACC;actual DPS;actual DPA;actual Eff.HP;actual Eff.HP def br;+15 HP;+15 ATK;+15 DEF;+15 SPD;+15 CRate;+15 CDmg;+15 RES;+15 ACC;+15 DPS;+15 DPA;+15 Eff.HP;+15 Eff.HP def br;slots 2/4/7;substats upgrades;\n";
 
             var index = 0;
             var displayBuilds = function() {
@@ -2700,7 +2721,7 @@ function optimize(focusSelected) {
                     // make copy of the monster and extend it
                     var monster_x = extendMonster(JSON.parse(JSON.stringify(monster)), allRunePermutations[index]);
 
-                    extendedMonsters += monster_x.rune_ids + ";" + monster_x.sets + ";" + monster_x.a_hp + ";" + monster_x.a_atk + ";" + monster_x.a_def + ";" + monster_x.a_spd + ";" + monster_x.a_crate + ";" + monster_x.a_cdmg + ";" + monster_x.a_res + ";" + monster_x.a_acc + ";" + monster_x.a_dps + ";" + monster_x.a_effhp + ";" + monster_x.a_effhp_d + ";" + monster_x.m_hp + ";" + monster_x.m_atk + ";" + monster_x.m_def + ";" + monster_x.m_spd + ";" + monster_x.m_crate + ";" + monster_x.m_cdmg + ";" + monster_x.m_res + ";" + monster_x.m_acc + ";" + monster_x.m_dps + ";" + monster_x.m_effhp + ";" + monster_x.m_effhp_d + ";" + monster_x.slots246 + ";" + monster_x.substat_skillups + ";";
+                    extendedMonsters += monster_x.rune_ids + ";" + monster_x.sets + ";" + monster_x.a_hp + ";" + monster_x.a_atk + ";" + monster_x.a_def + ";" + monster_x.a_spd + ";" + monster_x.a_crate + ";" + monster_x.a_cdmg + ";" + monster_x.a_res + ";" + monster_x.a_acc + ";" + monster_x.a_dps + ";" + monster_x.a_dpa + ";" + monster_x.a_effhp + ";" + monster_x.a_effhp_d + ";" + monster_x.m_hp + ";" + monster_x.m_atk + ";" + monster_x.m_def + ";" + monster_x.m_spd + ";" + monster_x.m_crate + ";" + monster_x.m_cdmg + ";" + monster_x.m_res + ";" + monster_x.m_acc + ";" + monster_x.m_dps + ";" + monster_x.m_dpa + ";" + monster_x.m_effhp + ";" + monster_x.m_effhp_d + ";" + monster_x.slots246 + ";" + monster_x.substat_skillups + ";";
                     extendedMonsters += "\n";
 
                     if (index + 1 < length && index % 100 == 0) {
@@ -2852,6 +2873,8 @@ function optimize(focusSelected) {
         allRunePermutations = [];
     };
     var getPermutationsLoop = function() {
+        var noBrokenSets = $("#opt_no_broken").is(':checked');
+
         if (totalRequestedSlots == 0 || allOneSet) {
             var r = [];
             for (; i0 < setsForAllSlots[0].length; i0++) {
@@ -2873,7 +2896,7 @@ function optimize(focusSelected) {
                                         return;
                                     }
 
-                                    if ($("#opt_no_broken").is(':checked')) {
+                                    if (!allOneSet && noBrokenSets) {
                                         var equippedSetTypes1 = {"Energy": 0, "Fatal": 0, "Blade": 0, "Rage": 0, "Swift": 0, "Focus": 0, "Guard": 0, "Endure": 0, "Violent": 0, "Will": 0, "Nemesis": 0, "Shield": 0, "Revenge": 0, "Despair": 0, "Vampire": 0, "Destroy": 0};
                                         equippedSetTypes1[r[0].set] += 1;
                                         equippedSetTypes1[r[1].set] += 1;
@@ -3056,7 +3079,7 @@ function optimize(focusSelected) {
                                     if (!canRequestedSetsBeFulfilled(requestedSetTypes, equippedSetTypes, r[5].set, totalRequestedSlots, 0, numberOfEquippedRequestedSetSlots, addedCounter[5])) {
                                         continue;
                                     }
-                                    if (totalRequestedSlots != 6 && $("#opt_no_broken").is(':checked') && areBrokenSets(equippedSetTypes, r[5].set)) {
+                                    if (totalRequestedSlots != 6 && noBrokenSets && areBrokenSets(equippedSetTypes, r[5].set)) {
                                         continue;
                                     }
                                     var passedFlexTest = true;
@@ -3295,12 +3318,10 @@ function displayMonsterBuild(newTabName, monster, buildId) {
 
     $('#' + newTabName).html(newHtml);
 
-    // display bonuses
     displayMonsterSetBonuses(newTabName + '_panel1', monster);
-    // calculate dps
-    monster = calculateAtkDps(monster);
+
+    monster = calculateDamageStats(monster);
     monster = calculateEffectiveHp(monster);
-    // display builds stats
     displayMonsterActualStats(newTabName + '_panel2', monster);
 
     //calculate and display actual equipped runes and stats
@@ -3469,7 +3490,7 @@ function editMonster(monsterId) {
         }
         $("#monster_update").attr("disabled", false);
 
-        var monster_x = extendMonster(monsterData, getRunesWithMons(gridRunes, monsterData.id));
+        var monster_x = extendMonster(monsterData, getMonsterRunes(monsterData.id));
         displayMonster(monster_x);
         displayMonsterSetBonuses("monster_panel1", monster_x);
         displayMonsterActualStats("monster_panel2", monster_x);
@@ -3482,7 +3503,7 @@ function editMonster(monsterId) {
         for (var i = 1; i <= 6; i++) {
             slotRune = null;
             for (var j = 0; j < runeIds.length; j++) {
-                slotRune = getRowDataById(gridRunes, runeIds[j]);
+                slotRune = getRuneDataById(runeIds[j]);
                 if (slotRune != null && slotRune.slot == i) {
                     break;
                 } else {
@@ -3856,7 +3877,7 @@ $(document).ready(function() {
             alert("All fields are required.");
             return false;
         }
-        nextMonsId = createMonster(gridMons, nextMonsId);
+        nextMonsId = createMonster(nextMonsId);
         replaceMonstersInSelect("rune_monster", gridMons, true);
         replaceMonstersInSelect("opt_monster", gridMons, true);
         saveToStorage();
@@ -3984,8 +4005,8 @@ $(document).ready(function() {
                 '    <a href="#" id="showMonPlus15">+15 stats</a>',
                 '</center>'
         ].join('\n'));
-        setVisibility(gridMons, [3, 4, 5, 6, 7, 8, 9, 10, 11], true);
-        setVisibility(gridMons, [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], false);
+        setVisibility(gridMons, [3, 4, 5, 6, 7, 8, 9, 10, 11, 12], true);
+        setVisibility(gridMons, [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32], false);
     });
 
     // switch to Actual Runed monster stats
@@ -4000,8 +4021,8 @@ $(document).ready(function() {
                 '    <a href="#" id="showMonPlus15">+15 stats</a>',
                 '</center>'
         ].join('\n'));
-        setVisibility(gridMons, [12, 13, 14, 15, 16, 17, 18, 19, 20], true);
-        setVisibility(gridMons, [3, 4, 5, 6, 7, 8, 9, 10, 11, 21, 22, 23, 24, 25, 26, 27, 28, 29], false);
+        setVisibility(gridMons, [13, 14, 15, 16, 17, 18, 19, 20, 21, 22], true);
+        setVisibility(gridMons, [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32], false);
     });
 
     // switch to Actual Runed monster stats
@@ -4016,8 +4037,8 @@ $(document).ready(function() {
                 '    <strong style="font-size: x-large;">+15 stats</strong>',
                 '</center>'
         ].join('\n'));
-        setVisibility(gridMons, [21, 22, 23, 24, 25, 26, 27, 28, 29], true);
-        setVisibility(gridMons, [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20], false);
+        setVisibility(gridMons, [23, 24, 25, 26, 27, 28, 29, 30, 31, 32], true);
+        setVisibility(gridMons, [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22], false);
     });
 
     // ----------------------------- Export/Import
@@ -4027,7 +4048,7 @@ $(document).ready(function() {
         if (file.type.match(/text.*|application\/json/)) {
             var reader = new FileReader();
             reader.onload = function(e) {
-                document.getElementById('exportimport').innerText = reader.result;
+                document.getElementById('exportimport').value = reader.result;
             }
             reader.readAsText(file);
         } else {
@@ -4137,14 +4158,14 @@ $(document).ready(function() {
     $('body').on('click', '#showActual', function (e) {
         e.preventDefault();
         $('#optStatHeader').html('<center><strong style="font-size: x-large;">Actual stats</strong> / <a href="#" id="showPlus15">+15 stats</a></center>');
-        toggleVisibility(gridOpt, [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]);
+        toggleVisibility(gridOpt, [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]);
     });
 
     // switch between Actual and +15 stats
     $('body').on('click', '#showPlus15', function (e) {
         e.preventDefault();
         $('#optStatHeader').html('<center><a href="#" id="showActual">Actual stats</a> / <strong style="font-size: x-large;">+15 stats</strong></center>');
-        toggleVisibility(gridOpt, [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]);
+        toggleVisibility(gridOpt, [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]);
     });
 
     // perform the optimizations

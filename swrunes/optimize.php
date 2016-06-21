@@ -594,7 +594,7 @@ function determineCompleteSetsAndEffects(&$monster, $runes) {
 }
 
 // calculates base, actual and +15 dps based on atk, crit rate and crit dmg
-function calculateAtkDps(&$monster) {
+function calculateDamageStats(&$monster) {
     $violentBonus = (strpos($monster["sets"], "Violent") === false ? 1 : 1.248);
     $maxCritRate = 100;
 
@@ -603,6 +603,8 @@ function calculateAtkDps(&$monster) {
     $crate = $monster["b_crate"];
     $monster["b_dps"] = (($maxCritRate - $crate) + $crate * (100 + $monster["b_cdmg"]) / 100) * $monster["b_atk"] / 100;
     $monster["b_dps"] = floor($monster["b_dps"] * $monster["b_spd"] / 100);
+
+    $monster["b_dpa"] = floor((($maxCritRate - $crate) + $crate * (100 + $monster["b_cdmg"]) / 100) * $monster["b_atk"] / 100);
     */
 
     // calculate actual dps with treshold base monster speed and consider Violent
@@ -613,6 +615,8 @@ function calculateAtkDps(&$monster) {
     $monster["a_dps"] = (($maxCritRate - $crate) + $crate * (100 + $monster["a_cdmg"]) / 100) * $monster["a_atk"] / 100;
     $monster["a_dps"] = floor($monster["a_dps"] * $monster["a_spd"] * $violentBonus / 100);
 
+    $monster["a_dpa"] = floor((($maxCritRate - $crate) + $crate * (100 + $monster["a_cdmg"]) / 100) * $monster["a_atk"] / 100);
+
     // calculate +15 dps with treshold base monster speed and consider Violent
     $crate = $monster["m_crate"];
     if ($crate > $maxCritRate) {
@@ -620,6 +624,8 @@ function calculateAtkDps(&$monster) {
     }
     $monster["m_dps"] = (($maxCritRate - $crate) + $crate * (100 + $monster["m_cdmg"]) / 100) * $monster["m_atk"] / 100;
     $monster["m_dps"] = floor($monster["m_dps"] * $monster["m_spd"] * $violentBonus / 100);
+
+    $monster["m_dpa"] = floor((($maxCritRate - $crate) + $crate * (100 + $monster["m_cdmg"]) / 100) * $monster["m_atk"] / 100);
 }
 
 // calculates effective hp, actual and +15, def. broken or not, based on hp and defense
@@ -688,7 +694,7 @@ function extendMonster($monster, $runes) {
     }
     determineCompleteSetsAndEffects($monster_x, $runes);
     calculateActualAndMax($monster_x);
-    calculateAtkDps($monster_x);
+    calculateDamageStats($monster_x);
     calculateEffectiveHp($monster_x);
     removeUnused($monster_x);
 
@@ -777,7 +783,7 @@ try {
             $redisClient->connect('127.0.0.1');
             */
 
-            $contents .= $_POST["sessionId"].$_POST["optimize_run"].";".$monster["id"].";".$monster_x["rune_ids"].";".$monster_x["sets"].";".$monster_x["a_hp"].";".$monster_x["a_atk"].";".$monster_x["a_def"].";".$monster_x["a_spd"].";".$monster_x["a_crate"].";".$monster_x["a_cdmg"].";".$monster_x["a_res"].";".$monster_x["a_acc"].";".$monster_x["a_dps"].";".$monster_x["a_effhp"].";".$monster_x["a_effhp_d"].";".$monster_x["m_hp"].";".$monster_x["m_atk"].";".$monster_x["m_def"].";".$monster_x["m_spd"].";".$monster_x["m_crate"].";".$monster_x["m_cdmg"].";".$monster_x["m_res"].";".$monster_x["m_acc"].";".$monster_x["m_dps"].";".$monster_x["m_effhp"].";".$monster_x["m_effhp_d"].";".$monster_x["slots246"].";".$monster_x["substat_skillups"]."\n";
+            $contents .= $_POST["sessionId"].$_POST["optimize_run"].";".$monster["id"].";".$monster_x["rune_ids"].";".$monster_x["sets"].";".$monster_x["a_hp"].";".$monster_x["a_atk"].";".$monster_x["a_def"].";".$monster_x["a_spd"].";".$monster_x["a_crate"].";".$monster_x["a_cdmg"].";".$monster_x["a_res"].";".$monster_x["a_acc"].";".$monster_x["a_dps"].";".$monster_x["a_dpa"].";".$monster_x["a_effhp"].";".$monster_x["a_effhp_d"].";".$monster_x["m_hp"].";".$monster_x["m_atk"].";".$monster_x["m_def"].";".$monster_x["m_spd"].";".$monster_x["m_crate"].";".$monster_x["m_cdmg"].";".$monster_x["m_res"].";".$monster_x["m_acc"].";".$monster_x["m_dps"].";".$monster_x["m_effhp"].";".$monster_x["m_effhp_d"].";".$monster_x["slots246"].";".$monster_x["substat_skillups"]."\n";
             $newRows++;
         }
     }

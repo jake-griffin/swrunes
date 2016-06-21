@@ -346,6 +346,27 @@ th > img {
     vertical-align: middle;
 }
 
+/* Rune Color Classes */
+.normal {
+    color: black;
+}
+
+.magic {
+    color: green;
+}
+
+.rare {
+    color: #48CCCD;
+}
+
+.hero {
+    color: purple;
+}
+
+.legend {
+    color: #D4A017;
+}
+
 /* Monster Attribute Classes */
 .fire {
     color: #AA0C05;

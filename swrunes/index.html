@@ -99,7 +99,7 @@
                               <th>CDmg</th>
                             </tr>
                           </thead>
-                          <tbody/>
+                          <tbody>
                           </tbody>
                           <tfoot>
                             <tr>
@@ -463,7 +463,7 @@
                               <th rowspan="2">ID</th>
                               <th rowspan="2">Name</th>
                               <th rowspan="2">Level</th>
-                              <th id="optMonsterStatHeader" colspan="27">
+                              <th id="optMonsterStatHeader" colspan="30">
                                 <center>
                                   <strong style="font-size: x-large;">Base stats</strong>
                                   /
@@ -484,6 +484,7 @@
                               <th>RES</th>
                               <th>ACC</th>
                               <th>DPS</th>
+                              <th>DPA</th>
                               <th>HP</th>
                               <th>ATK</th>
                               <th>DEF</th>
@@ -493,6 +494,7 @@
                               <th>RES</th>
                               <th>ACC</th>
                               <th>DPS</th>
+                              <th>DPA</th>
                               <th>HP</th>
                               <th>ATK</th>
                               <th>DEF</th>
@@ -502,6 +504,7 @@
                               <th>RES</th>
                               <th>ACC</th>
                               <th>DPS</th>
+                              <th>DPA</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -518,7 +521,7 @@
                         <div class="row">
                           <div class="col-md-3">
                             <label for="monster_id">Id</label>
-                            <input type="text" class="form-control" name="monster_id" id="monster_id" value="" readonly/>
+                            <input type="text" class="form-control" name="monster_id" id="monster_id" value="" readonly />
                           </div>
                           <div class="col-md-4">
                             <label for="monster_attribute">Attribute*</label>
@@ -1001,7 +1004,7 @@
                         <tr>
                           <th rowspan="2">runeIds*</th>
                           <th rowspan="2">sets*</th>
-                          <th colspan="22" id="optStatHeader"><center><strong style="font-size: x-large;">Actual stats </strong> / <a href="#" id="showPlus15"> +15 stats </a></center></th>
+                          <th colspan="24" id="optStatHeader"><center><strong style="font-size: x-large;">Actual stats </strong> / <a href="#" id="showPlus15"> +15 stats </a></center></th>
                           <th rowspan="2">slots 2/4/6*</th>
                           <th rowspan="2">substat<br/>upgrades</th>
                         </tr>
@@ -1015,8 +1018,9 @@
                           <th>RES</th>
                           <th>ACC</th>
                           <th>DPS</th>
+                          <th>DPA</th>
                           <th>EHP</th>
-                          <th>EHP<img src="/images/defbreak.png" alt="def br"/></th>
+                          <th>EHP<img src="images/defbreak.png" alt="def br"/></th>
                           <th>HP</th>
                           <th>ATK</th>
                           <th>DEF</th>
@@ -1026,8 +1030,9 @@
                           <th>RES</th>
                           <th>ACC</th>
                           <th>DPS</th>
+                          <th>DPA</th>
                           <th>EHP</th>
-                          <th>EHP<img src="/images/defbreak.png" alt="def br"/></th>
+                          <th>EHP<img src="images/defbreak.png" alt="def br"/></th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1105,6 +1110,22 @@
                       <div class="panel-heading">Change Log</div>
                       <div class="panel-body">
                         <ul>
+                          <li>
+                            21.06.2016 - (v1.07) Personal customizations:
+                            <ul>
+                              <li>Monsters: added colours/attribute icons (now need to specify attribute when creating a monster; supported for SWProxy imports)</li>
+                              <li>Monsters: added dps/dpa and eff hp to the monsters table</li>
+                              <li>Monsters: added ability to toggle between base/actual/+15 stats on monsters table</li>
+                              <li>Runes: rune previews now have links to jump to the rune edit or monster pages (click the rune/monster id on the preview)</li>
+                              <li>
+                                  Optimizer: adjusted DPS calculation/added DPA calculation
+                                  <ul>
+                                      <li>Now it is calculated based on a "base" speed of 100, so monsters can be compared to each other a bit more accurately (each monster's skill multipliers still vary significantly though)</li>
+                                      <li>Speed and Violent multipliers were fixed</li>
+                                      <li>DPA (damage per attack) is calculated the same as DPS, but without speed/violent considerations. This is useful for monsters that you want to improve their single turn attack (nuke in 1 hit, so that they can't heal in between your attacks)</li>
+                                  </ul>
+                            </ul>
+                          </li>
                           <li>
                             22.02.2016 - (v1.06) Colourful:
                             <ul>
@@ -1263,13 +1284,12 @@
         </div>
       </div>
     </div>
+    <input type="hidden" id="savedBuilds" value="" />
+    <input type="hidden" id="sessionId" value="" />
+    <input type="hidden" id="optimize_run" value="0" />
+    <input type="hidden" id="optimize_error" value="" />
+    <input type="hidden" id="optimize_count" value="0" />
+    <input type="hidden" id="optimize_calls_count" value="0" />
   </div>
-
-  <input type="hidden" id="savedBuilds" value="" />
-  <input type="hidden" id="sessionId" value="" />
-  <input type="hidden" id="optimize_run" value="0" />
-  <input type="hidden" id="optimize_error" value="" />
-  <input type="hidden" id="optimize_count" value="0" />
-  <input type="hidden" id="optimize_calls_count" value="0" />
 </body>
 </html>
