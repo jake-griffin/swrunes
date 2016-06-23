@@ -1461,19 +1461,30 @@ function updateMonster() {
     gridRunes.rows().invalidate().draw();
 }
 
-function replaceMonstersInSelect(elementId, table, leaveFirstOption) {
-    var $el = $('#' + elementId);
-    var oldValue = $el.val();
-    if (leaveFirstOption) {
-        $('#' + elementId + ' option:gt(0)').remove();
-    } else {
-        $el.empty(); // remove old options
-    }
-    table.data().each(function (d) {
-        $el.append($("<option></option>")
-                .attr("value", d.id).text(d.name));
+function replaceMonstersInSelect() {
+    var monsters = gridMons.data();
+    monsters.sort(function(a, b) {
+        if (a.name.toUpperCase() > b.name.toUpperCase()) {
+            return 1;
+        } else if (a.name.toUpperCase() < b.name.toUpperCase()) {
+            return -1;
+        } else if (a.level > b.level) {
+            return 1;
+        } else if (a.level < b.level) {
+            return -1;
+        } else {
+            return 0;
+        }
     });
-    $el.val(oldValue);
+    ['rune_monster', 'opt_monster'].forEach(function(elementId) {
+        var $el = $('#' + elementId);
+        var oldValue = $el.val();
+        $('#' + elementId + ' option:gt(0)').remove();
+        monsters.each(function (d) {
+            $el.append($("<option></option>").attr("value", d.id).text(d.name));
+        });
+        $el.val(oldValue);
+    });
 }
 
 function deleteRunesByMonsterId(monsterid) {
@@ -3574,8 +3585,7 @@ $(document).ready(function() {
         }
     }
 
-    replaceMonstersInSelect("rune_monster", gridMons, true);
-    replaceMonstersInSelect("opt_monster", gridMons, true);
+    replaceMonstersInSelect();
 
     // row select for runes table
     $('#grid_runes tbody').on('click', 'tr', function (e) {
@@ -3716,8 +3726,7 @@ $(document).ready(function() {
                 }
             });
             gridRunes.rows().invalidate().draw();
-            replaceMonstersInSelect("rune_monster", gridMons, true);
-            replaceMonstersInSelect("opt_monster", gridMons, true);
+            replaceMonstersInSelect();
             refreshGridRunesFilters();
             refreshGridSubRunesFilters();
             saveToStorage();
@@ -3879,8 +3888,7 @@ $(document).ready(function() {
             return false;
         }
         nextMonsId = createMonster(nextMonsId);
-        replaceMonstersInSelect("rune_monster", gridMons, true);
-        replaceMonstersInSelect("opt_monster", gridMons, true);
+        replaceMonstersInSelect();
         saveToStorage();
         fireAlert("success", "Monster " + nextMonsId + " created.");
     });
@@ -3898,8 +3906,7 @@ $(document).ready(function() {
             return false;
         }
         updateMonster();
-        replaceMonstersInSelect("rune_monster", gridMons, true);
-        replaceMonstersInSelect("opt_monster", gridMons, true);
+        replaceMonstersInSelect();
         refreshGridRunesFilters();
         refreshGridSubRunesFilters();
         saveToStorage();
@@ -4092,8 +4099,7 @@ $(document).ready(function() {
             $('#savedBuilds').val(JSON.stringify(savedBuilds));
         }
 
-        replaceMonstersInSelect("rune_monster", gridMons, true);
-        replaceMonstersInSelect("opt_monster", gridMons, true);
+        replaceMonstersInSelect();
         refreshGridRunesFilters();
         refreshGridSubRunesFilters();
         if (validateMessage == "") {
