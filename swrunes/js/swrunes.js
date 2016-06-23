@@ -4050,6 +4050,16 @@ $(document).ready(function() {
     });
 
     // ----------------------------- Export/Import
+    document.getElementById('allMonstersDataImportLink').addEventListener('click', function(e) {
+        $.ajax({
+            dataType: "json",
+            url: 'resources/monsters.json',
+            success: function(data) {
+                document.getElementById('exportimport').value = JSON.stringify(data);
+            }
+        });
+    });
+
     document.getElementById('fileImport').addEventListener('change', function(e) {
         var file = this.files[0];
 
