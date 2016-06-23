@@ -1128,6 +1128,7 @@ function displayMonster(monster) {
 
 // display monster in "Optimizer -> 1.Monster and base stats" panel
 function displayMonsterOpt(monster) {
+    $("#o1_0").html(monster.level || "0");
     $("#o1_1").html(monster.b_hp || "0");
     $("#o1_2").html(monster.b_atk || "0");
     $("#o1_3").html(monster.b_def || "0");
