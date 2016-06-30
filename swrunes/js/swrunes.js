@@ -1139,6 +1139,49 @@ function displayMonsterOpt(monster) {
     $("#o1_8").html(monster.b_acc || "0");
 }
 
+// populate current monster config in "Optimizer -> 2.Sets and slot types" panel
+function populateCurrentConfig(monster) {
+    // Clear set configuration
+    for (var i = 1; i <= 3; i++) {
+        document.getElementById("opt_set" + i).value = "";
+    }
+    // Populate set configuration from monster
+    if (monster.sets.trim().length > 0) {
+        var sets = monster.sets.split(",");
+        for (var i = 0; i < sets.length; i++) {
+            var set = sets[i].trim();
+            var setElement = document.getElementById("opt_set" + (i + 1));
+            for (var j = 0; j < setElement.options.length; j++) {
+                if (setElement.options[j].value == set) {
+                    setElement.value = set;
+                }
+            }
+        }
+    }
+
+    // Clear slot configuration
+    for (var i = 2; i <= 6; i += 2) {
+        document.getElementById("opt_slot" + i).value = "";
+    }
+    // Populate slot configuration from monster
+    var runes = getMonsterRunes(monster.id);
+    if (runes.length > 0) {
+        for (var i = 0; i < runes.length; i++) {
+            var rune = runes[i];
+            if (rune.slot % 2 == 0) {
+                var slot = rune.slot;
+                var mainType = rune.m_t;
+                var slotElement = document.getElementById("opt_slot" + slot);
+                for (var j = 0; j < slotElement.options.length; j++) {
+                    if (slotElement.options[j].value == mainType) {
+                        slotElement.value = mainType;
+                    }
+                }
+            }
+        }
+    }
+}
+
 // display monster set bonuses in "Total set bonuses" panel
 function displayMonsterSetBonuses(elementId, monster) {
     var newHtml = '';
@@ -2909,7 +2952,24 @@ function optimize(focusSelected) {
                                     }
 
                                     if (!allOneSet && noBrokenSets) {
-                                        var equippedSetTypes1 = {"Energy": 0, "Fatal": 0, "Blade": 0, "Rage": 0, "Swift": 0, "Focus": 0, "Guard": 0, "Endure": 0, "Violent": 0, "Will": 0, "Nemesis": 0, "Shield": 0, "Revenge": 0, "Despair": 0, "Vampire": 0, "Destroy": 0};
+                                        var equippedSetTypes1 = {
+                                            "Energy": 0,
+                                            "Fatal": 0,
+                                            "Blade": 0,
+                                            "Rage": 0,
+                                            "Swift": 0,
+                                            "Focus": 0,
+                                            "Guard": 0,
+                                            "Endure": 0,
+                                            "Violent": 0,
+                                            "Will": 0,
+                                            "Nemesis": 0,
+                                            "Shield": 0,
+                                            "Revenge": 0,
+                                            "Despair": 0,
+                                            "Vampire": 0,
+                                            "Destroy": 0
+                                        };
                                         equippedSetTypes1[r[0].set] += 1;
                                         equippedSetTypes1[r[1].set] += 1;
                                         equippedSetTypes1[r[2].set] += 1;
@@ -4128,6 +4188,7 @@ $(document).ready(function() {
             monster = emptyMonster;
         }
         displayMonsterOpt(monster);
+        populateCurrentConfig(monster);
     });
 
     // perform the optimizations
