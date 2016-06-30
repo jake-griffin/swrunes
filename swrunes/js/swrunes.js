@@ -1791,7 +1791,7 @@ function calculateDamageStats(monster) {
     nrate = 100 - crate
 
     monster.m_dps = (nrate + crate * (100 + monster.m_cdmg) / 100) * monster.m_atk / 100;
-    monster.m_dps = Math.floor(monster.m_dps * monster.m_spd / 100 + monster.m_dps * violentBonus);
+    monster.m_dps = Math.floor(monster.m_dps * monster.m_spd * violentBonus / 100);
 
     monster.m_dpa = Math.floor((nrate + crate * (100 + monster.m_cdmg) / 100) * monster.m_atk / 100);
 
