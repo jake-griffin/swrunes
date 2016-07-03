@@ -421,3 +421,11 @@ tr.dark > td:nth-child(2)::before {
     vertical-align: middle;
     content: "";
 }
+
+.currentMonsterRune {
+    background-color: #DFFB8E;
+}
+
+.otherMonsterRune {
+    background-color: #F6CECE;
+}

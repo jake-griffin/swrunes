@@ -764,7 +764,7 @@ function initOptTable(dataSet) {
         '</center>'
     ].join("\n"));
     var data1 = [];
-    if (dataSet !== null && dataSet.length>0) {
+    if (dataSet !== null && dataSet.length > 0) {
         data1 = dataSet;
     }
     return $('#grid_opt').DataTable({
@@ -801,7 +801,7 @@ function initOptTable(dataSet) {
                     var monster_id = json.data[0].monster_id;
                     // get monster from monsters table
                     var monster = getMonsterDataById(monster_id);
-                    //calculate monsters stats
+                    //calculate monster stats
                     var monster_x = extendMonster(monster, orderBySlots(getMonsterRunes(monster_id)));
                     monster_x.monster_id = monster_id;
                     json.data.splice(0, 0, monster_x);
@@ -847,7 +847,25 @@ function initOptTable(dataSet) {
         "columnDefs": [
             {
                 "render": function (data, type, row) {
-                    return '<a href="#" class="previewBuild" data-id="' + data + '" title="Preview">' + data + '</a>';
+                    var linkContents = [];
+                    var runeIds = data.split(',');
+                    for (var i = 0; i < runeIds.length; i++) {
+                        var runeId = runeIds[i];
+                        if (runeId) {
+                            var rune = getRuneDataById(runeId);
+                            var monsterId = document.getElementById('optimizedMonster').dataset.id;
+                            if (rune.monster == monsterId) {
+                                linkContents.push('<span class="currentMonsterRune">' + runeId + '</span>');
+                            } else if (rune.monster > 0) {
+                                linkContents.push('<span class="otherMonsterRune">' + runeId + '</span>');
+                            } else {
+                                linkContents.push(runeId);
+                            }
+                        }
+                    }
+                    return '<a href="#" class="previewBuild" data-id="' + data + '" title="Preview">' +
+                            linkContents.join() +
+                        '</a>';
                 },
                 "targets": 0
             }
@@ -2682,6 +2700,8 @@ function optimize(focusSelected) {
     //var extendedMonsters = optimize($('#opt_monster').val(), requestedSetTypes);
     // get optimized monster
     var monster = getMonsterDataById($('#opt_monster').val());
+    document.getElementById('optimizedMonster').innerText = monster.name;
+    document.getElementById('optimizedMonster').dataset.id = monster.id;
 
     // get 6 sets of possible runes, 1 for each slot
     var setsForAllSlots = pickCandidateRunes(requestedSetTypes, $('#opt_monster').val(), focusSelected);
@@ -3596,9 +3616,6 @@ $(document).ready(function() {
     var nextRuneId = 0;
     var nextMonsId = 0;
     var nextBuildId = 0;
-    var runesFirstActivate = true;
-    var monsFirstActivate = true;
-    var optFirstActivate = true;
     $("#optimize_error").val("");
     $("#optimize_count").val("0");
     $("#optimize_calls_count").val("0");
@@ -3611,7 +3628,6 @@ $(document).ready(function() {
     gridRunes = initRunesTable([]);
     gridSubRunes = initSubRunesTable([]);
     gridMons = initMonstersTable([]);
-
     gridOpt = initOptTable([]);
 
     // AUTO load last saved data from localStorage
