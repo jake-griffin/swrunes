@@ -1,3 +1,5 @@
+// vi: et sw=4 ts=4
+
 // General Data and empty objects
 var localDataName = "swrunes_saveddata";
 var localDataDateName = "swrunes_date";
@@ -3301,8 +3303,7 @@ function setVisibility(table, columns, visible) {
 function addTab(name, title) {
     var li = $('<li/>');
     // add the link
-    li.append('<a href="#' + name + '" data-toggle="tab">' + title + '</a>'); //li.append('<span aria-hidden="true">X</span>');
-    // add the li to the ul
+    li.append('<a href="#' + name + '" role="tab" data-toggle="tab">' + title + '</a>');
     $('#myTab').append(li);
 
     // add the tab content

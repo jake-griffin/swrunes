@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<!--
+   vi: et sw=2 ts=2
+-->
 <html>
 <head>
   <meta charset="utf-8">
@@ -47,12 +50,12 @@
         <div role="tabpanel" class="panel panel-default ebook">
           <div class="panel-heading no-padding">
             <ul class="nav nav-pills" role="tablist" id="myTab">
-              <li><a href="#runes" aria-controls="runes" role="tab" data-toggle="tab">Runes</a></li>
-              <li><a href="#bezhoe" data-toggle="tab">Adv.Runes</a></li>
-              <li><a href="#monsters" data-toggle="tab">Monsters</a></li>
-              <li><a href="#optimizer" data-toggle="tab">Optimizer</a></li>
-              <li class="active"><a href="#export" data-toggle="tab">Export/Import</a></li>
-              <li><a href="#notes" data-toggle="tab">Notes</a></li>
+              <li><a href="#runes" role="tab" data-toggle="tab">Runes</a></li>
+              <li><a href="#bezhoe" role="tab" data-toggle="tab">Adv.Runes</a></li>
+              <li><a href="#monsters" role="tab" data-toggle="tab">Monsters</a></li>
+              <li><a href="#optimizer" role="tab" data-toggle="tab">Optimizer</a></li>
+              <li class="active"><a href="#export" role="tab" data-toggle="tab">Export/Import</a></li>
+              <li><a href="#notes" role="tab" data-toggle="tab">Notes</a></li>
             </ul>
           </div>
 
@@ -847,8 +850,8 @@
                             <div class="checkbox">
                               <label><input type="checkbox" value="" id="opt_only_lvl_6_or_up">Use only runes lvl >=</label><input type="text" id="opt_only_lvl_or_up_value" value="6" />
                             </div>
-                            <div> Include these runes <input type="text" id="opt_use_runes" placeholder="ex:11,12,70" value="" /></div>
-                            <div> Do not include these runes <input type="text" id="opt_not_use_runes" placeholder="ex:11,12,70" value="" /></div>
+                            <div>Include these runes <input type="text" id="opt_use_runes" placeholder="ex:11,12,70" value="" /></div>
+                            <div>Do not include these runes <input type="text" id="opt_not_use_runes" placeholder="ex:11,12,70" value="" /></div>
                           </div>
 
                           <div class="col-md-12">
@@ -1006,7 +1009,7 @@
                         <tr>
                           <th rowspan="2">runeIds*</th>
                           <th rowspan="2">sets*</th>
-                          <th colspan="24" id="optStatHeader"><center><strong style="font-size: x-large;">Actual stats </strong> / <a href="#" id="showPlus15"> +15 stats </a></center></th>
+                          <th colspan="24" id="optStatHeader"><center><strong style="font-size: x-large;">Actual stats</strong> / <a href="#" id="showPlus15">+15 stats</a></center></th>
                           <th rowspan="2">slots 2/4/6*</th>
                           <th rowspan="2">substat<br/>upgrades</th>
                         </tr>
@@ -1115,7 +1118,7 @@
                       <div class="panel-body">
                         <ul>
                           <li>
-                            03.07.2016 - (v1.08) Additional customizations:
+                            v1.08 (2016-07-03) - Additional customizations:
                             <ul>
                               <li>Displayed selected monster's Level along with the other stats being displayed on the optimizer tab</li>
                               <li>Sorted monsters alphabetically in the dropdowns on the Monster and Optimize tabs</li>
@@ -1126,23 +1129,25 @@
                             </ul>
                           </li>
                           <li>
-                            21.06.2016 - (v1.07) Personal customizations:
+                            v1.07 (2016-06-21) - Personal customizations:
                             <ul>
                               <li>Monsters: added colours/attribute icons (now need to specify attribute when creating a monster; supported for SWProxy imports)</li>
                               <li>Monsters: added dps/dpa and eff hp to the monsters table</li>
                               <li>Monsters: added ability to toggle between base/actual/+15 stats on monsters table</li>
                               <li>Runes: rune previews now have links to jump to the rune edit or monster pages (click the rune/monster id on the preview)</li>
                               <li>
-                                  Optimizer: adjusted DPS calculation/added DPA calculation
-                                  <ul>
-                                      <li>Now it is calculated based on a "base" speed of 100, so monsters can be compared to each other a bit more accurately (each monster's skill multipliers still vary significantly though)</li>
-                                      <li>Speed and Violent multipliers were fixed</li>
-                                      <li>DPA (damage per attack) is calculated the same as DPS, but without speed/violent considerations. This is useful for monsters that you want to improve their single turn attack (nuke in 1 hit, so that they can't heal in between your attacks)</li>
-                                  </ul>
+                                Optimizer: adjusted DPS calculation/added DPA calculation
+                                <ul>
+                                  <li>Now it is calculated based on a "base" speed of 100, so monsters can be compared to each other a bit more accurately (each monster's skill multipliers still vary significantly though)</li>
+                                  <li>Speed and Violent multipliers were fixed</li>
+                                  <li>DPA (damage per attack) is calculated the same as DPS, but without speed/violent considerations. This is useful for monsters that you want to improve their single turn attack (nuke in 1 hit, so that they can't heal in between your attacks)</li>
+                                </ul>
+                              </li>
+                              <li>Import/Export: added ability to import from a file</li>
                             </ul>
                           </li>
                           <li>
-                            22.02.2016 - (v1.06) Colourful:
+                            v1.06 (2016-02-22) - Colourful:
                             <ul>
                               <li>Runes: added colours</li>
                               <li>Optimizer: changes in result generation. May work a little slower, but will be stable at higher load. *cough* FRR</li>
@@ -1150,7 +1155,7 @@
                             </ul>
                           </li>
                           <li>
-                            04.02.2016 - (v1.05) Over 100k HP:
+                            v1.05 (2016-02-04) - Over 100k HP:
                             <ul>
                               <li>Optimizer: added <a target="_blank" href="https://www.reddit.com/r/summonerswar/comments/443yk8/guide_to_maximizing_effective_hp_for_frr/">Efficient Hp</a> with and without def break/ Based on HP and Def stats</li>
                               <li>Optimizer: added top row with stats of current equiped build</li>
@@ -1158,10 +1163,10 @@
                             </ul>
                           </li>
                           <li>
-                            25.01.2016 - (v1.04) Dat Efficiency:
+                            v1.04 (2016-01-25) - Dat Efficiency:
                             <ul>
                               <li>Optimizer: improved performance for people outside EU and with slower connection</li>
-                              <li>Optimizer: changed option "Use only runes lvl 6+" to manually imput lvl</li>
+                              <li>Optimizer: changed option "Use only runes lvl 6+" to manually input lvl</li>
                               <li>Optimizer &amp; Build preview: added DPS based on Atk, C.Rate, C.Dmg, Speed and Violent. Do not use it to compare different monsters, because it is based on monsters Base Speed.</li>
                               <li>Runes &amp; Adv.runes: fixed table when there are longer names</li>
                               <li>Runes &amp; Adv.runes: added default sort order</li>
@@ -1170,7 +1175,7 @@
                             </ul>
                           </li>
                           <li>
-                            12.01.2016 - (v1.03) Moved to a new server in EU:
+                            v1.03 (2016-01-12) - Moved to a new server in EU:
                             <ul>
                               <li>Optimizer: changed "Use only 6* runes for slots 2,4,6" to include 5* SPD on slot 2</li>
                               <li>Optimizer: added option "Use only runes lvl 6+"</li>
@@ -1179,20 +1184,21 @@
                             </ul>
                           </li>
                           <li>
-                            08.01.2016 - (v1.02) For those of you who want multisorting or custom formulas:
+                            v1.02 (2016-01-08) - For those of you who want multisorting or custom formulas:
                             <ul>
                               <li>Optimizer: added option to produce results in CSV file so you can apply your custom formulas</li>
                             </ul>
                           </li>
                           <li>
-                            04.01.2016 - (v1.01) Further improvements in performance:
+                            v1.01 (2016-01-04) - Further improvements in performance:
                             <ul>
                               <li><a target="_blank" href="https://www.reddit.com/r/summonerswar/comments/3yzb02/releasing_the_sw_monsters_runes_extractor/">SWParser.exe</a>: use this tool by <a target="_blank" href="https://www.reddit.com/user/kakarotoks">/u/kakarotoks</a> to export your data directly from your phone</li>
                               <li>Runes: added button Lock All Equipped</li>
                               <li>Optimizer: reduced strain on server</li>
                             </ul>
                           </li>
-                          <li> 24.12.2015 - (v1.0) Added server and database for faster build preview:
+                          <li>
+                            v1.0 (2015-12-24) - Added server and database for faster build preview:
                             <ul>
                               <li>Tool: added messaging system, removed popups</li>
                               <li>Runes: added validation and warning for invalid runes on import</li>
@@ -1201,30 +1207,32 @@
                               <li>Optimizer: greatly improved performance, added "No broken set option", no more irresponsive scripts, can show over 1milion builds(slow, but can do)</li>
                             </ul>
                           </li>
-                          <li> 13.10.2015 - (v0.10) Added Advanced Rune Tab displaying all substats with sorting and filtering. All credits to <a target="_blank" href="https://www.reddit.com/user/BeZhoe">BeZhoe</a>
-                          </li>
-                          <li> 12.09.2015 - (v0.9) Added Destroy rune
-                          </li>
-                          <li> 12.06.2015 - (v0.8) Filtering results by stat values:
+                          <li>v0.10 (2015-10-13) - Added Advanced Rune Tab displaying all substats with sorting and filtering. All credits to <a target="_blank" href="https://www.reddit.com/user/BeZhoe">BeZhoe</a></li>
+                          <li>v0.9 (2015-09-12) - Added Destroy rune</li>
+                          <li>
+                            v0.8 (2015-06-12) - Filtering results by stat values:
                             <ul>
                               <li>Optimizer: added filtering of the results by min/max values (slows the table redrawing)</li>
                               <li>Build preview: added buttons "Lock runes", "Unlock runes", "Equip runes"</li>
                               <li>Tool: added web counter and donate button</li>
                             </ul>
                           </li>
-                          <li> 1.06.2015 - (v0.7) Runes input update:
+                          <li>
+                            1.06.2015 - (v0.7) Runes input update:
                             <ul>
                               <li>Runes: added filtering in Runes table</li>
                               <li>Runes: rune main stat value is auto populated based on Grade and Level. Doesn't work with grades 1 and 2. Couldn't find data</li>
                             </ul>
                           </li>
-                          <li> 31.05.2015 - (v0.6) Faster optimization by choosing stats to focus on:
+                          <li>
+                            v0.6 (2015-05-31) - Faster optimization by choosing stats to focus on:
                             <ul>
                               <li>Optimizer: added panel with stats to Focus on</li>
                               <li>Optimizer: 2 different optimizations: One with ALL possible builds, second with Focus on chosen stats (but showing less builds)</li>
                             </ul>
                           </li>
-                          <li> 28.05.2015 - (v0.5) More counters:
+                          <li>
+                            v0.5 (2015-05-28) - More counters:
                             <ul>
                               <li>Optimizer: added permutations counting</li>
                               <li>Optimizer: added warning for too many results</li>
@@ -1232,7 +1240,8 @@
                               <li>Import/Export: Saved in browser cache after every change.</li>
                             </ul>
                           </li>
-                          <li> 25.05.2015 - (v0.4) Pages are back:
+                          <li>
+                            v0.4 (2015-05-25) - Pages are back:
                             <ul>
                               <li>Optimizer: over 300% shorter calculations time</li>
                               <li>Tables: pagination is back; dont ask for scroller, please</li>
@@ -1242,7 +1251,8 @@
                               <li>Runes: "Use only runes without monster" changed to "Use only runes from inventory"</li>
                             </ul>
                           </li>
-                          <li> 21.05.2015 - (v0.3) Added:
+                          <li>
+                            v0.3 (2015-05-21) - Added:
                             <ul>
                               <li>Build preview: results from Optimizer tables can be visually previewed and saved in export data</li>
                               <li>Tables: removed pagination and added scroller</li>
@@ -1251,14 +1261,16 @@
                               <li>Rune slot preview: added rune location and id</li>
                             </ul>
                           </li>
-                          <li> 17.05.2015 - (v0.2) Added 2 preferences and helpers in registering runes:
+                          <li>
+                            v0.2 (2015-05-17) - Added 2 preferences and helpers in registering runes:
                             <ul>
                               <li>Preferences: checkboxes "Use only 6* runes" and "Use only 5/6* runes"</li>
                               <li>Runes: when entering slot 1,3 or 5, the main stat type is changed to ATK flat, DEF flat and HP flat</li>
                               <li>Runes: when setting an innate or substat to "-" the value for it is cleared</li>
                             </ul>
                           </li>
-                          <li> 16.05.2015 - (v0.1) Release of beta version:
+                          <li>
+                            v0.1 (2015-05-16) - Release of beta version:
                             <ul>
                               <li>Runes management: create, update, delete, preview</li>
                               <li>Monster management: create, update, delete, preview</li>
@@ -1268,7 +1280,7 @@
                               <li>Tested (sort of) on Mozilla Firefox 29.0.1, Chrome 42.0.2311.152, IE 10.0.9200</li>
                             </ul>
                           </li>
-                          <li> 11.05.2015 - start of development</li>
+                          <li>2015-05-11 - start of development</li>
                         </ul>
                       </div>
                     </div>
@@ -1279,15 +1291,11 @@
                       <div class="panel-heading">Notes for the future</div>
                       <div class="panel-body">
                         <ul>
-                          <li> Optimizer: add column for ATK based DPS</li>
-                          <li> Optimizer: offer user to imput secondary calculation instead of always +15</li>
-                          <li> Optimizer: Make searches for spd/hp/def and spd/def/hp interchangeable</li>
-                          <li> Import: Add checkboxes "Import only 5/6* runes", "Filter out silver monsters" or "Filter out 4* and below" - still not final</li>
-                          <li> Import: Import directly from a file</li>
-                          <li> Runes create/update: Add validation for impossible runes<br/>(example: Slot 2 with main stat RES)</li>
-                          <li> Runes create/update (OR in Monster preview): Add validation and Notice that the monster has more than 6 runes equipped or more than 1 rune for a slot</li>
-                          <li> Monsters: When entering a name for new monster, offer an option to autocomplete the stats at 40lvl</li>
-                          <li> Hosting: Implement login, rune/monster/build bookmarking and sharing</li>
+                          <li>Optimizer: offer user to input secondary calculation instead of always +15</li>
+                          <li>Import: Add checkboxes "Import only 5/6* runes", "Filter out silver monsters" or "Filter out 4* and below" - still not final</li>
+                          <li>Runes create/update: Add validation for impossible runes<br/>(example: Slot 2 with main stat RES)</li>
+                          <li>Runes create/update (OR in Monster preview): Add validation and Notice that the monster has more than 6 runes equipped or more than 1 rune for a slot</li>
+                          <li>Monsters: When entering a name for new monster, offer an option to autocomplete the stats at 40lvl</li>
                         </ul>
                       </div>
                     </div>
