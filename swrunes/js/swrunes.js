@@ -1884,6 +1884,17 @@ function calculateEffectiveHp(monster) {
     return monster;
 }
 
+// calculates base, actual and +15 heal for Ahman based on crit rate and max hp
+function calculateHeal(monster) {
+    var violentBonus = (monster.sets.indexOf("Violent") > -1 ? 1.248 : 1);
+
+    monster.b_heal = Math.floor(Math.min(monster.b_crate, 100) * monster.b_hp * monster.b_spd / 100);
+    monster.a_heal = Math.floor(Math.min(monster.a_crate, 100) * monster.a_hp * monster.a_spd * violentBonus / 100);
+    monster.m_heal = Math.floor(Math.min(monster.m_crate, 100) * monster.m_hp * monster.m_spd * violentBonus / 100);
+
+    return monster;
+}
+
 // calculates all rune bonuses over a monster and returns monster_extended object
 function extendMonster(monster, runes) {
     var monster_x = emptyExtend(monster);
@@ -1896,6 +1907,7 @@ function extendMonster(monster, runes) {
     monster_x = calculateActualAndMax(monster_x);
     monster_x = calculateDamageStats(monster_x);
     monster_x = calculateEffectiveHp(monster_x);
+    monster_x = calculateHeal(monster_x);
 
     return monster_x;
 }
@@ -3340,11 +3352,10 @@ function displayMonsterBuild(newTabName, monster, buildId) {
         '        <div class="row">',
         '            <div class="col-md-12">',
         '                <div class="right">',
-        '                    <button type="submit" class="deleteTab btn btn-danger btn-xs" data-name="' + newTabName + '" data-id="' + buildId + '">Remove</button>',
-        '                    <!--<a href="#" data-name="' + newTabName + '" data-id="' + buildId + '" class="deleteTab">Remove</a>-->',
-        '                    <button type="submit" class="buildLockRunes btn btn-primary btn-xs" data-ids="' + monster.rune_ids + '">Lock runes</button>',
-        '                    <button type="submit" class="buildUnlockRunes btn btn-primary btn-xs" data-ids="' + monster.rune_ids + '">Unlock runes</button>',
-        '                    <button type="submit" class="buildEquipRunes btn btn-primary btn-xs" data-monsterid="' + monster.id + '" data-monstername="' + monster.name + '" data-ids="' + monster.rune_ids + '">Equip runes</button>',
+        '                    <button class="deleteTab btn btn-danger btn-xs" data-name="' + newTabName + '" data-id="' + buildId + '">Remove</button>',
+        '                    <button class="buildLockRunes btn btn-primary btn-xs" data-ids="' + monster.rune_ids + '">Lock runes</button>',
+        '                    <button class="buildUnlockRunes btn btn-primary btn-xs" data-ids="' + monster.rune_ids + '">Unlock runes</button>',
+        '                    <button class="buildEquipRunes btn btn-primary btn-xs" data-monsterid="' + monster.id + '" data-monstername="' + monster.name + '" data-ids="' + monster.rune_ids + '">Equip runes</button>',
         '                </div>',
         '            </div>',
         '        </div>',
@@ -3415,6 +3426,7 @@ function displayMonsterBuild(newTabName, monster, buildId) {
 
     monster = calculateDamageStats(monster);
     monster = calculateEffectiveHp(monster);
+    monster = calculateHeal(monster);
     displayMonsterActualStats(newTabName + '_panel2', monster);
 
     //calculate and display actual equipped runes and stats
@@ -3436,7 +3448,6 @@ function displayMonsterBuild(newTabName, monster, buildId) {
     }
 
     $('.deleteTab').on('click', function(e) {
-        e.preventDefault();
         deleteTab($(this).data("name"));
 
         savedBuilds = JSON.parse($('#savedBuilds').val());
@@ -3446,8 +3457,6 @@ function displayMonsterBuild(newTabName, monster, buildId) {
     });
 
     $('.buildLockRunes').on('click', function(e) {
-        e.preventDefault();
-
         var runes = [];
         if ($(this).data("ids") != "") {
             runes = $(this).data("ids").split(",");
@@ -3466,8 +3475,6 @@ function displayMonsterBuild(newTabName, monster, buildId) {
     });
 
     $('.buildUnlockRunes').on('click', function(e) {
-        e.preventDefault();
-
         var runes = [];
         if ($(this).data("ids") != "") {
             runes = $(this).data("ids").split(",");
@@ -3486,8 +3493,6 @@ function displayMonsterBuild(newTabName, monster, buildId) {
     });
 
     $('.buildEquipRunes').on('click', function(e) {
-        e.preventDefault();
-
         var runes = [];
         var monsterId = Number($(this).data("monsterid"));
         var monsterName = $(this).data("monstername");
