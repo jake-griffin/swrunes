@@ -1,36 +1,5 @@
 <?php
 include("config.php");
-// DB function for file
-function loadFromFile($filename) {
-    GLOBAL $host, $sw_user, $sw_pass, $sw_db;
-    $conn = mysql_connect($host, $sw_user, $sw_pass);
-    mysql_select_db($sw_db, $conn);
-    mysql_query("LOAD DATA LOCAL INFILE '".$filename."' INTO TABLE sw_optimizer
-        FIELDS TERMINATED BY ';'
-        LINES TERMINATED BY '\n'
-        (session, monster_id, rune_ids, sets, a_hp, a_atk, a_def, a_spd, a_crate, a_cdmg, a_res, a_acc, a_dps, a_dpa, a_effhp, a_effhp_d, m_hp, m_atk, m_def, m_spd, m_crate, m_cdmg, m_res, m_acc, m_dps, m_dpa, m_effhp, m_effhp_d, slots246, substat_skillups) ");
-    mysql_close($conn);
-    return 1;
-}
-
-
-function loadFromFile2($filename) {
-    GLOBAL $host, $sw_user, $sw_pass, $sw_db;
-    $mysqli  =  new mysqli($host,$sw_user,$sw_pass,$sw_db);
-    /* check connection */
-    if (mysqli_connect_errno()) {
-        return "No connection to database.";
-    }
-    $sql = "LOAD DATA LOCAL INFILE '".$filename."' INTO TABLE sw_optimizer
-        FIELDS TERMINATED BY ';'
-        LINES TERMINATED BY '\n'
-        (session, monster_id, rune_ids, sets, a_hp, a_atk, a_def, a_spd, a_crate, a_cdmg, a_res, a_acc, a_dps, a_dpa, a_effhp, a_effhp_d, m_hp, m_atk, m_def, m_spd, m_crate, m_cdmg, m_res, m_acc, m_dps, m_dpa, m_effhp, m_effhp_d, slots246, substat_skillups) ";
-    if (!($stmt = $mysqli->query($sql))) {
-        return $mysqli->error;
-    }
-    return 1;
-}
-
 
 //----------------------------------------------------------------------------------
 // class DBWrapper

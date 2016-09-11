@@ -3,7 +3,6 @@
 // General Data and empty objects
 var localDataName = "swrunes_saveddata";
 var localDataDateName = "swrunes_date";
-var useFile = 1;
 var allSets = {
     "Energy": [2, "HP%", 15],
     "Fatal": [4, "ATK%", 35],
@@ -2845,37 +2844,6 @@ function optimize(focusSelected) {
         });
 
     };
-    var callFinalize = function(optimize_run, totalLength) {
-        $("#opt_time").html("" + moment().format('MMM Do YY HH:mm:ss') + ": Calculating number of permutations " + totalLength + ". Calculating builds stats " + totalLength + " / " + totalLength + ". Preparing for display 0 / 1 (estimate " + calculateEstimate(totalLength) + " more seconds)");
-        $.ajax({
-            type: "POST",
-            url: "finalizeImport.php",
-            cache: false,
-            data: {
-                "optimize_run": optimize_run,
-                "sessionId": $('#sessionId').val(),
-            },
-            dataType: "json",
-            success: function(data) {
-                if (data.optimize_run == parseInt($("#optimize_run").val(), 10) && data.id == 1) {
-                    displayBuilds();
-                    gridOpt.draw();
-                } else {
-                    $("#opt_time").html("" + moment().format('MMM Do YY HH:mm:ss') + ": There was an error: " + data.error);
-                }
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                $("#opt_time").html("" + moment().format('MMM Do YY HH:mm:ss') + ": " + $("#optimize_error").val() + " Some of the builds failed to calculate and display.");
-                gridOpt.draw();
-            },
-            statusCode: {
-                500: function() {
-                    $("#opt_time").html("" + moment().format('MMM Do YY HH:mm:ss') + ": " + $("#optimize_error").val() + " Some of the builds failed to calculate and display.");
-                    gridOpt.draw();
-                }
-            }
-        });
-    };
     var callOptimize = function() {
         $.ajax({
             type: "POST",
@@ -2906,12 +2874,8 @@ function optimize(focusSelected) {
                             $("#opt_time").html("" + moment().format('MMM Do YY HH:mm:ss') + ": " + $("#optimize_error").val() + " Some of the builds failed to calculate and display.");
                             gridOpt.draw();
                         } else {
-                            if (useFile == 1) {
-                                callFinalize(optimize_run, totalLength);
-                            } else {
-                                displayBuilds();
-                                gridOpt.draw();
-                            }
+                            displayBuilds();
+                            gridOpt.draw();
                         }
                     }
                 }
@@ -3275,9 +3239,6 @@ function optimize(focusSelected) {
         }
     };
 
-    // if (!saveToFile) {
-    //     callCleanSession();
-    // }
     getPermutationsLoop();
 
 }
