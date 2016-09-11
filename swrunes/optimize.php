@@ -58,291 +58,6 @@ function getRowDataById($allRunes, $id) {
     return null;
 }
 
-// removes duplicated runes from array
-function arrayOfRunesUnique($array) {
-    $result = array_unique($array);
-    return $result;
-}
-
-function totalRunes($data) {
-    $count = 0;
-    foreach ($data as $k => $v) {
-        $count += $v;
-    }
-
-    return $count;
-}
-
-// valuate if a rune is focus worthy
-function isRuneFocusWorthy($d, $focus1, $focus2, $focus3) {
-    // judge slots 2, 4 and 6 by mainstat, if the mainstat for the slot is not selected
-    if (($d["slot"] == 2 && $_POST["opt_slot2"] == "") || ($d["slot"] == 4 && $_POST["opt_slot4"] == "") || ($d["slot"] == 6 && $_POST["opt_slot6"] == "")) {
-        if (strrpos($focus1, $d["m_t"]) > -1 || strrpos($focus2, $d["m_t"]) > -1 || strrpos($focus3, $d["m_t"]) > -1) {
-            return true;
-        }
-    }
-
-    // judge slots 1, 3 and 5 by substats only
-    if ($d["i_t"] != "" && (strrpos($focus1, $d["i_t"]) > -1 || strrpos($focus2, $d["i_t"]) > -1 || strrpos($focus3, $d["i_t"]) > -1)) {
-        return true;
-    }
-    if ($d["s1_t"] != "" && (strrpos($focus1, $d["s1_t"]) > -1 || strrpos($focus2, $d["s1_t"]) > -1 || strrpos($focus3, $d["s1_t"]) > -1)) {
-        return true;
-    }
-    if ($d["s2_t"] != "" && (strrpos($focus1, $d["s2_t"]) > -1 || strrpos($focus2, $d["s2_t"]) > -1 || strrpos($focus3, $d["s2_t"]) > -1)) {
-        return true;
-    }
-    if ($d["s3_t"] != "" && (strrpos($focus1, $d["s3_t"]) > -1 || strrpos($focus2, $d["s3_t"]) > -1 || strrpos($focus3, $d["s3_t"]) > -1)) {
-        return true;
-    }
-    if ($d["s4_t"] != "" && (strrpos($focus1, $d["s4_t"]) > -1 || strrpos($focus2, $d["s4_t"]) > -1 || strrpos($focus3, $d["s4_t"]) > -1)) {
-        return true;
-    }
-
-    // if everything failed, check if the rune set bonus equals any focus
-    /*
-    if (allSets[d.set][1].indexOf(focus1) > -1 || allSets[d.set][1].indexOf(focus2) > -1 || allSets[d.set][1].indexOf(focus3) > -1) {
-        return true;
-    }
-    */
-
-    return false;
-}
-
-// valuate which of 2 runes is better regarding focuses
-/*
-function compare2RunesByFocus($rune1, $rune2, $focus1, $focus2, $focus3) {
-    $bonuses1 = array();
-    $bonuses2 = array();
-    $bonuses1.push(getRuneBonuses(rune1, focus1));
-    bonuses1.push(getRuneBonuses(rune1, focus2));
-    bonuses1.push(getRuneBonuses(rune1, focus3));
-    bonuses2.push(getRuneBonuses(rune2, focus1));
-    bonuses2.push(getRuneBonuses(rune2, focus2));
-    bonuses2.push(getRuneBonuses(rune2, focus3));
-
-    $totalBonuses1 = [ bonuses1[0][0] + bonuses1[1][0] + bonuses1[2][0] , bonuses1[0][1] + bonuses1[1][1] + bonuses1[2][1] ];
-    $totalBonuses2 = [ bonuses2[0][0] + bonuses2[1][0] + bonuses2[2][0] , bonuses2[0][1] + bonuses2[1][1] + bonuses2[2][1] ];
-    if (totalBonuses1[0] > totalBonuses2[0]) {
-        return -1;
-    } else if (totalBonuses1[0] == totalBonuses2[0]) {
-        if (totalBonuses1[1] > totalBonuses2[1]) {
-            return -1;
-        } else {
-            return 1
-        }
-    } else {
-        return 1;
-    }
-}
-*/
-
-/*
-function pickCandidateRunes($allRunes, $requestedSetTypes, $monsterId, $focusSelected) {
-    // create 6 empty sets
-    $resultSets = array(array(), array(), array(), array(), array(), array());
-
-    $requestedSetNumber = totalRunes($requestedSetTypes);
-    $notWantedRuneIds = array();
-    $wantedRuneIds = array();
-    $wantedRuneSlots = array();
-    if ($('#opt_use_runes').val() != "") {
-        $wantedRuneIds = explode($_POST["opt_use_runes"], ",");
-        for ($i = 0; $i < count($wantedRuneIds); $i++) {
-            $wantedRuneIds[i] = intval($wantedRuneIds[$i]);
-            $wantedRune = getRowDataById($allRunes, $wantedRuneIds[$i]);
-            $wantedRuneSlots[] = $wantedRune["slot"];
-        }
-    }
-    if ($_POST["opt_not_use_runes"]!= "") {
-        $notWantedRuneIds = explode($_POST["opt_not_use_runes"], ",");
-        for ($i = 0; $i < count($notWantedRuneIds); $i++) {
-            $notWantedRuneIds[$i] = intval($notWantedRuneIds[$i]);
-        }
-    }
-
-    //focuses
-    $resultSetsFromRequestSets = array(
-        array(array(), array(), array(), array(), array(), array()),
-        array(array(), array(), array(), array(), array(), array()),
-        array(array(), array(), array(), array(), array(), array())
-    );
-    $focus1 = $_POST["opt_focus1"];
-    if ($focus1 == "") {
-        $focus1 = null;
-    }
-    $focus2 = $_POST["opt_focus2"];
-    if ($focus2 == "") {
-        $focus2 = null;
-    }
-    $focus3 = $_POST["opt_focus3"];
-    if ($focus3 == "") {
-        $focus3 = null;
-    }
-    $setLimit = $focusRuneSlotCount / 2;
-    $generalLimit = $focusRuneSlotCount;
-    if ($requestedSetNumber > 0) {
-        $generalLimit = $focusRuneSlotCount / 2;
-    }
-
-    foreach ($allRunes as $d) {
-
-        // check if rune is requested by id and add it
-        if (in_array($d["id"], $wantedRuneIds)) {
-            $resultSets[$d["slot"] - 1][] = $d;
-            continue;
-
-        // check if rune is not requested by id and there is requested rune for that slot
-        } else if (in_array($d["slot"], $wantedRuneSlots)) {
-            continue;
-        }
-
-        // check if rune is requested by id to not be used
-        if (in_array($d["id"], $notWantedRuneIds)) {
-            continue;
-        }
-
-        // check if rune is locked
-        if ($d["locked"] == 1 && $_POST["opt_use_locked"] == "false" && $d["monster"] != $monsterId) {
-            continue;
-        }
-
-        // check if rune is equipped by monster
-        if ($d["monster"] != "" && $_POST["opt_only_unequipped"] == "true") {
-            // pick the ones already equipped on the monster
-            if ($d["monster"] != $monsterId) {
-                continue;
-            }
-        }
-        // if the requested set types slots sum up to 6 (energy + vampire = 6; energy + focus = 4) reject runes not from those sets
-        if ($requestedSetNumber == 6 && $requestedSetTypes[$d["set"]] == 0) {
-            continue;
-        }
-        // if slot is 2, 4 or 6 and there are preferences for it, refuse
-        if (
-            ($d["slot"] == 2 && $_POST["opt_slot2"] != "" && $_POST["opt_slot2"] !== $d["m_t"]) ||
-            ($d["slot"] == 4 && $_POST["opt_slot4"] != "" && $_POST["opt_slot4"] !== $d["m_t"]) ||
-            ($d["slot"] == 6 && $_POST["opt_slot6"] != "" && $_POST["opt_slot6"] !== $d["m_t"])
-        ) {
-            continue;
-        }
-        if ($_POST["opt_only_6star"] == "true" && $d["grade"] != 6 && ($d["slot"] == 2 || $d["slot"] == 4 || $d["slot"] == 6)) {
-            continue;
-        }
-        if ($_POST["opt_only_56star"] == "true" && $d["grade"] != 6 && $d["grade"] != 5) {
-            continue;
-        }
-
-        if ($focusSelected == 0) {
-            $resultSets[$d["slot"] - 1][] = $d;
-        } else {
-            // if there are no runes, push the first one
-            if (count($resultSets[$d["slot"] - 1]) == 0) {
-                $resultSets[$d["slot"] - 1][] = $d;
-            } else {
-                // if there are more runes than the limit check if rune is worthy to consider based on focus
-                if (count($resultSets[$d["slot"] - 1]) >= $generalLimit && !isRuneFocusWorthy($d, $focus1, $focus2, $focus3)) {
-                    continue;
-                }
-                // evaluate the place for the new rune based on focuses
-                for ($i = count($resultSets[$d["slot"] - 1]) - 1; $i >= 0; $i--) {
-                    $lastRune = $resultSets[$d["slot"] - 1][$i];
-                    $compareResult = compare2RunesByFocus(lastRune, d, focus1, focus2, focus3);
-                    // if new rune is better than the compared
-                    if (compareResult == 1) {
-                        if (i == 0) {
-                            resultSets[$d["slot"] - 1].splice(0, 0, d);
-                            if (resultSets[$d["slot"] - 1].length > generalLimit) {
-                                resultSets[$d["slot"] - 1].splice(resultSets[$d["slot"] - 1].length - 1, 1);
-                            }
-                        } else {
-                            continue;
-                        }
-                    } else if (compareResult == 0) {
-                        resultSets[$d["slot"] - 1].splice(i, 0, d);
-                        if (resultSets[$d["slot"] - 1].length > generalLimit) {
-                            resultSets[$d["slot"] - 1].splice(resultSets[$d["slot"] - 1].length - 1, 1);
-                        }
-                    } else {
-                        if (i == resultSets[$d["slot"] - 1].length - 1) {
-
-                        } else {
-                            resultSets[$d["slot"] - 1].splice(i + 1, 0, d);
-                            if (resultSets[$d["slot"] - 1].length > generalLimit) {
-                                resultSets[$d["slot"] - 1].splice(resultSets[$d["slot"] - 1].length - 1, 1);
-                            }
-                        }
-                    }
-                    break;
-                }
-            }
-
-            // do the same for every requested set, and join the results
-            $s = 0;
-            for ($j in requestedSetTypes) {
-                if (requestedSetTypes[j] > 0) {
-                    if (d.set == j) {
-                        // if there are no runes, push the first one
-                        if (resultSetsFromRequestSets[s][$d["slot"] - 1].length == 0) {
-                            resultSetsFromRequestSets[s][$d["slot"] - 1].push(JSON.parse(JSON.stringify(d)));
-                        } else {
-                            // if there are more runes than the limit check if rune is worthy to consider based on focus
-                            if (resultSetsFromRequestSets[s][$d["slot"] - 1].length >= setLimit && !isRuneFocusWorthy(d, focus1, focus2, focus3)) {
-                                continue;
-                            }
-                            // evaluate the place for the new rune based on focuses
-                            for ($i = resultSetsFromRequestSets[s][$d["slot"] - 1].length - 1; i >= 0; i--) {
-                                $lastRune = resultSetsFromRequestSets[s][$d["slot"] - 1][i];
-                                $compareResult = compare2RunesByFocus(lastRune, d, focus1, focus2, focus3);
-                                // if new rune is better than the compared
-                                if (compareResult == 1) {
-                                    if (i == 0) {
-                                        resultSetsFromRequestSets[s][$d["slot"] - 1].splice(0, 0, d);
-                                        if (resultSetsFromRequestSets[s][$d["slot"] - 1].length > setLimit) {
-                                            resultSetsFromRequestSets[s][$d["slot"] - 1].splice(resultSetsFromRequestSets[s][$d["slot"] - 1].length - 1, 1);
-                                        }
-                                    } else {
-                                        continue;
-                                    }
-                                } else if (compareResult == 0) {
-                                    resultSetsFromRequestSets[s][$d["slot"] - 1].splice(i, 0, d);
-                                    if (resultSetsFromRequestSets[s][$d["slot"] - 1].length > setLimit) {
-                                        resultSetsFromRequestSets[s][$d["slot"] - 1].splice(resultSetsFromRequestSets[s][$d["slot"] - 1].length - 1, 1);
-                                    }
-                                } else {
-                                    if (i == resultSetsFromRequestSets[s][$d["slot"] - 1].length - 1) {
-                                    } else {
-                                        resultSetsFromRequestSets[s][$d["slot"] - 1].splice(i + 1, 0, d);
-                                        if (resultSetsFromRequestSets[s][$d["slot"] - 1].length > setLimit) {
-                                            resultSetsFromRequestSets[s][$d["slot"] - 1].splice(resultSetsFromRequestSets[s][$d["slot"] - 1].length - 1, 1);
-                                        }
-                                    }
-                                }
-                                break;
-                            }
-                        }
-                    }
-
-                    s++;
-                }
-            }
-
-        }
-
-    });
-
-    if ($focusSelected == 1) {
-        for ($i = 0; $i < 3; $i++) {
-            for ($j = 0; $j < 6; $j++) {
-                $resultSets[$j] = arrayOfRunesUnique(array_merge($resultSets[$j], $resultSetsFromRequestSets[$i][$j]));
-            }
-        }
-    }
-
-    return $resultSets;
-}
-*/
-
 // ----------------------------- CALCULATE MONSTER ACTUAL STATS FUNCTIONS
 // extend a basic monster with 0 valies
 function emptyExtend($monster) {
@@ -390,20 +105,6 @@ function emptyExtend($monster) {
         "sets" => "",
         "slots246" => ""
     ));
-}
-
-// order the runes by slot ascending
-function orderBySlots($runes) {
-    $new_runes = array();
-    for ($i = 1; $i <= 6; $i++) {
-        for ($j = 0; $j < count($runes); $j++) {
-            if ($runes[$j]["slot"] == $i) {
-                $new_runes[] = $runes[$j];
-                break;
-            }
-        }
-    }
-    return $new_runes;
 }
 
 // add the stat to monsters rune bonus stats
@@ -598,15 +299,6 @@ function calculateDamageStats(&$monster) {
     $violentBonus = (strpos($monster["sets"], "Violent") === false ? 1 : 1.248);
     $maxCritRate = 100;
 
-    // calculate base dps
-    /*
-    $crate = $monster["b_crate"];
-    $monster["b_dps"] = (($maxCritRate - $crate) + $crate * (100 + $monster["b_cdmg"]) / 100) * $monster["b_atk"] / 100;
-    $monster["b_dps"] = floor($monster["b_dps"] * $monster["b_spd"] / 100);
-
-    $monster["b_dpa"] = floor((($maxCritRate - $crate) + $crate * (100 + $monster["b_cdmg"]) / 100) * $monster["b_atk"] / 100);
-    */
-
     // calculate actual dps with treshold base monster speed and consider Violent
     $crate = $monster["a_crate"];
     if ($crate > $maxCritRate) {
@@ -635,12 +327,6 @@ function calculateEffectiveHp(&$monster) {
     //effective hp WITH defense break = hp * (1000 + (Defense * 1.5)) / 1000
     $defBreakMultiplier = 1.5;
     $noDefBreakMultiplier = 3;
-
-    // calculate base eff. hp
-    /*
-    $monster["b_effhp"] = floor($monster["b_hp"] * (1000 + $monster["b_def"] * $noDefBreakMultiplier) / 1000);
-    $monster["b_effhp_d"] = floor($monster["b_hp"] * (1000 + $monster["b_def"] * $defBreakMultiplier) / 1000);
-    */
 
     // calculate actual eff. hp
     $monster["a_effhp"] = floor($monster["a_hp"] * (1000 + $monster["a_def"] * $noDefBreakMultiplier) / 1000);
@@ -738,15 +424,6 @@ try {
     $contents = "";
 
     $ajax_result["error"] = "";
-    /*
-    if ($length > 0 && $_POST["optimize_call"] == 1){
-        $before = microtime(true);
-        $dbase->deleteBySession($_POST["sessionId"], $_POST["optimize_run"]);
-        $after = microtime(true);
-        $difference = $after - $before;
-        $ajax_result["error"] .= " time delete: ".$difference;
-    }
-    */
 
     $before = microtime(true);
     for ($index = 0; $index < $length; $index++) {
@@ -771,18 +448,12 @@ try {
                 $after = microtime(true);
                 $difference = $after - $before;
                 $ajax_result["error"] .= " time db: ".$difference;
-                //file_put_contents("db_insert.txt", date("Y-m-d H:i:s").";".$difference.";".$_POST["sessionId"]."\n", FILE_APPEND | LOCK_EX);
                 $before = microtime(true);
 
                 unset($extendedMonsters);
                 $extendedMonsters = array();
             }
         } else {
-            /*
-            $redisClient = new Redis();
-            $redisClient->connect('127.0.0.1');
-            */
-
             $contents .= $_POST["sessionId"].$_POST["optimize_run"].";".$monster["id"].";".$monster_x["rune_ids"].";".$monster_x["sets"].";".$monster_x["a_hp"].";".$monster_x["a_atk"].";".$monster_x["a_def"].";".$monster_x["a_spd"].";".$monster_x["a_crate"].";".$monster_x["a_cdmg"].";".$monster_x["a_res"].";".$monster_x["a_acc"].";".$monster_x["a_dps"].";".$monster_x["a_dpa"].";".$monster_x["a_effhp"].";".$monster_x["a_effhp_d"].";".$monster_x["m_hp"].";".$monster_x["m_atk"].";".$monster_x["m_def"].";".$monster_x["m_spd"].";".$monster_x["m_crate"].";".$monster_x["m_cdmg"].";".$monster_x["m_res"].";".$monster_x["m_acc"].";".$monster_x["m_dps"].";".$monster_x["m_effhp"].";".$monster_x["m_effhp_d"].";".$monster_x["slots246"].";".$monster_x["substat_skillups"]."\n";
             $newRows++;
         }
@@ -795,14 +466,6 @@ try {
             FILE_APPEND | LOCK_EX
         );
     }
-    /*
-    $before = microtime(true);
-    loadFromFile($swrunes_dir.$filename);
-    unlink($filename);
-    $after = microtime(true);
-    $difference = $after - $before;
-    $ajax_result["error"] .= " file load db: ".$difference;
-    */
 
     $ajax_result["id"] = $newRows;
     $ajax_result["success"] = true;
