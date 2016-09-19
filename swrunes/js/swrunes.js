@@ -19,7 +19,12 @@ var allSets = {
     "Revenge": [2, "", ""],
     "Despair": [4, "", ""],
     "Vampire": [4, "", ""],
-    "Destroy": [2, "", ""]
+    "Destroy": [2, "", ""],
+    "Fight": [2, "ATK%", "7"],
+    "Determination": [2, "DEF%", "7"],
+    "Enhance": [2, "HP%", "7"],
+    "Accuracy": [2, "ACC%", "10"],
+    "Tolerance": [2, "RES%", "10"]
 };
 
 var allStatsMax = {
@@ -136,7 +141,12 @@ var emptySetCounter = {
     "Revenge": 0,
     "Despair": 0,
     "Vampire": 0,
-    "Destroy": 0
+    "Destroy": 0,
+    "Fight": 0,
+    "Determination": 0,
+    "Enhance": 0,
+    "Accuracy": 0,
+    "Tolerance": 0
 };
 var emptyRune = {
     "id": "",
@@ -1808,7 +1818,12 @@ function determineCompleteSetsAndEffects(monster, runes) {
         "Revenge": 0,
         "Despair": 0,
         "Vampire": 0,
-        "Destroy": 0
+        "Destroy": 0,
+        "Fight": 0,
+        "Determination": 0,
+        "Enhance": 0,
+        "Accuracy": 0,
+        "Tolerance": 0
     };
     for (i = 0; i < runes.length; i++) {
         setCounter[runes[i].set]++;
@@ -2664,7 +2679,12 @@ function optimize(focusSelected) {
         "Revenge": 0,
         "Despair": 0,
         "Vampire": 0,
-        "Destroy": 0
+        "Destroy": 0,
+        "Fight": 0,
+        "Determination": 0,
+        "Enhance": 0,
+        "Accuracy": 0,
+        "Tolerance": 0
     };
     if ($("#opt_set1").val() != "") {
         requestedSetTypes[$("#opt_set1").val()] += allSets[$("#opt_set1").val()][0];
@@ -2751,7 +2771,12 @@ function optimize(focusSelected) {
         "Revenge": 0,
         "Despair": 0,
         "Vampire": 0,
-        "Destroy": 0
+        "Destroy": 0,
+        "Fight": 0,
+        "Determination": 0,
+        "Enhance": 0,
+        "Accuracy": 0,
+        "Tolerance": 0
     };
     var numberOfEquippedRequestedSetSlots = 0;
     var addedCounter = [false, false, false, false, false, false];
@@ -2954,7 +2979,12 @@ function optimize(focusSelected) {
                                             "Revenge": 0,
                                             "Despair": 0,
                                             "Vampire": 0,
-                                            "Destroy": 0
+                                            "Destroy": 0,
+                                            "Fight": 0,
+                                            "Determination": 0,
+                                            "Enhance": 0,
+                                            "Accuracy": 0,
+                                            "Tolerance": 0
                                         };
                                         equippedSetTypes1[r[0].set] += 1;
                                         equippedSetTypes1[r[1].set] += 1;
@@ -3260,7 +3290,6 @@ function setVisibility(table, columns, visible) {
 }
 
 // ----------------------------- Saved builds functions
-//create new tab with id and title
 function addTab(name, title) {
     var li = $('<li/>');
     // add the link
@@ -3272,7 +3301,6 @@ function addTab(name, title) {
     $('#myTabContents').append(content);
 }
 
-// destroy tab
 function deleteTab(name) {
     $('#myTab li a[href="#' + name + '"]').parents('li').remove();
     $('#' + name).remove();

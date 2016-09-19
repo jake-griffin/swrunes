@@ -20,7 +20,12 @@ $allSets = array(
     "Revenge" => array(2, "", ""),
     "Despair" => array(4, "", ""),
     "Vampire" => array(4, "", ""),
-    "Destroy" => array(2, "", "")
+    "Destroy" => array(2, "", ""),
+    "Fight" => array(2, "ATK%", "7"),
+    "Determination" => array(2, "DEF%", "7"),
+    "Enhance" => array(2, "HP%", "7"),
+    "Accuracy" => array(2, "ACC%", "10"),
+    "Tolerance" => array(2, "RES%", "10")
 );
 
 $allStatsMax = array(
@@ -277,7 +282,12 @@ function determineCompleteSetsAndEffects(&$monster, $runes) {
         "Revenge" => 0,
         "Despair" => 0,
         "Vampire" => 0,
-        "Destroy" => 0
+        "Destroy" => 0,
+        "Fight" => 0,
+        "Determination" => 0,
+        "Enhance" => 0,
+        "Accuracy" => 0,
+        "Tolerance" => 0
     );
     for ($i = 0; $i < count($runes); $i++) {
         $setCounter[$runes[$i]["set"]]++;
